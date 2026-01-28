@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Defibrillatoren Markt Langquaid</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+<style>
+html, body { height:100%; margin:0; }
+#map { height:100%; width:100%; }
+
+.tooltip { font-size:14px; }
+
+.aed {
+  width:34px; height:34px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  font-weight:bold;
+  font-size:13px;
+  border:2px solid #fff;
+}
+.green { background:#2ecc71; }
+.orange { background:#f39c12; }
+
+.leaflet-popup-content img {
+  max-width:220px;
+  cursor:pointer;
+  display:block;
+}
+</style>
+</head>
+
+<body>
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+// Karte
+var map = L.map('map').setView([48.83, 12.05], 12);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom:19,
+  attribution:'© OpenStreetMap'
+}).addTo(map);
+
+// AED Icon
+function aedIcon(color){
+  return L.divIcon({
+    html:"<div class='aed "+color+"'>AED</div>",
+    className:"",
+    iconSize:[34,34],
+    iconAnchor:[17,34]
+  });
+}
+
+// CSV laden
+fetch("defibrillatoren.csv")
+  .then(r => r.text())
+  .then(text => {
+    var lines = text.trim().split("\n");
+    var header = lines.shift();
+
+    lines.forEach(line => {
+      var c = line.split(";");
+      var name=c[0], addr=c[1];
+      var lat=parseFloat(c[2]), lon=parseFloat(c[3]);
+      var status=c[4], reason=c[5], slide=c[6];
+
+      var icon = status==="24/7" ? aedIcon("green") : aedIcon("orange");
+
+      var m = L.marker([lat,lon],{icon:icon}).addTo(map);
+
+      m.bindTooltip(
+        "<strong>"+name+"</strong><br>"+addr+
+        "<br>Verfügbarkeit: <strong>"+status+
+        "</strong><br><em>"+reason+"</em>",
+        {direction:"top", className:"tooltip"}
+      );
+
+      var img="slides/folie_"+slide+".png";
+      m.bindPopup(
+        "<strong>"+name+"</strong><br><br>"+
+        "<img src='"+img+"' onclick="window.open('"+img+"','_blank')">"+
+        "<div style='font-size:12px'>Klick = vergrößern</div>"
+      );
+    });
+  });
+</script>
+</body>
+</html>
