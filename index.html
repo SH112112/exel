@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Defibrillatoren – Markt Langquaid</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Lokales Leaflet (CSP- & GitHub-Pages-kompatibel) -->
+<link rel="stylesheet" href="leaflet/leaflet.css">
+
+<style>
+html, body {
+  height: 100%;
+  margin: 0;
+}
+#map {
+  height: 100%;
+  width: 100%;
+}
+
+/* Tooltip */
+.tooltip {
+  font-size: 14px;
+}
+
+/* AED Marker */
+.aed {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: bold;
+  font-size: 13px;
+  border: 2px solid #ffffff;
+  box-sizing: border-box;
+}
+.aed.green { background: #2ecc71; }
+.aed.orange { background: #f39c12; }
+
+/* Popup */
+.leaflet-popup-content img {
+  max-width: 220px;
+  height: auto;
+  cursor: pointer;
+  display: block;
+}
+
+/* Legende */
+.legend {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: white;
+  padding: 10px 12px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  font-size: 13px;
+  line-height: 1.4;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.legend-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+.legend-dot.green { background:#2ecc71; }
+.legend-dot.orange { background:#f39c12; }
+</style>
+</head>
+
+<body>
+<div id="map"></div>
+
+<div class="legend">
+  <strong>Defibrillatoren</strong><br>
+  <div class="legend-item">
+    <div class="legend-dot green"></div>24/7 verfügbar
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot orange"></div>eingeschränkt verfügbar
+  </div>
+</div>
+
+<!-- Lokales Leaflet JS -->
+<script src="leaflet/leaflet.js"></script>
+
+<script>
+// Karte initialisieren
+var map = L.map('map').setView([48.83, 12.05], 12);
+
+// OpenStreetMap Tiles
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19,
+  attribution: '© OpenStreetMap'
+}).addTo(map);
+
+// AED Marker
+function aedIcon(color) {
+  return L.divIcon({
+    html: "<div class='aed " + color + "'>AED</div>",
+    className: "",
+    iconSize: [34, 34],
+    iconAnchor: [17, 34]
+  });
+}
+
+// CSV laden
+fetch("defibrillatoren.csv")
+  .then(function(response) {
+    if (!response.ok) throw new Error("CSV-Datei nicht gefunden");
+    return response.text();
+  })
+  .then(function(text) {
+    var lines = text.trim().split("\n");
+    lines.shift(); // Header entfernen
+
+    lines.forEach(function(line) {
+      if (!line.trim()) return;
+
+      var c = line.split(";");
+      if (c.length < 7) return;
+
+      var name = c[0];
+      var addr = c[1];
+      var lat = parseFloat(c[2]);
+      var lon = parseFloat(c[3]);
+      var status = c[4];
+      var reason = c[5];
+      var slide = c[6];
+
+      if (isNaN(lat) || isNaN(lon)) return;
+
+      var icon = status === "24/7" ? aedIcon("green") : aedIcon("orange");
+
+      var marker = L.marker([lat, lon], { icon: icon }).addTo(map);
+
+      marker.bindTooltip(
+        "<strong>" + name + "</strong><br>" +
+        addr + "<br>" +
+        "Verfügbarkeit: <strong>" + status + "</strong><br>" +
+        "<em>" + reason + "</em>",
+        { direction: "top", className: "tooltip" }
+      );
+
+      var img = "slides/folie_" + slide + ".png";
+
+      marker.bindPopup(
+        "<strong>" + name + "</strong><br><br>" +
+        "<img src='" + img + "' onclick="window.open('" + img + "','_blank')">" +
+        "<div style='font-size:12px'>Klick auf Bild = vergrößern</div>"
+      );
+    });
+  })
+  .catch(function(err) {
+    alert("Fehler beim Laden der Defibrillatoren-Daten: " + err.message);
+  });
+</script>
+</body>
+</html>
