@@ -1,0 +1,14 @@
+﻿Name;Adresse;Breitengrad (lat);Längengrad (lon);Status (24/7 oder eingeschränkt);Grund bei eingeschränkt;Foliennummer
+Langquaid Feuerwehrhaus;Floriansplatz 1;48,8315;12,05;24/7;ständig zugänglich;3
+Langquaid Schulsportplatz;Pestalozzistr. 8;48,8266;12,0493;24/7;ständig zugänglich;4
+Raiffeisenbank Langquaid;Rottenburgerstr. 1;48,8206;12,0507;eingeschränkt;täglich 05–23 Uhr (Bankvorraum);5
+Pritsch GmbH & Co. KG;Rottenburgerstr. 1, Sandsbach;48,8158;12,0454;24/7;außen montiert;6
+Langquaid Waldstadion;Waldstadion 1;48,8199;12,0349;eingeschränkt;nur bei Sportbetrieb;7
+Niederleierndorf Freibad;Wiesenweg 2;48,826;12,0811;eingeschränkt;nur während Freibadbetrieb (Sommer);8
+Niedermoorstadion Niederleierndorf;Wiesenweg 2;48,826;12,0811;eingeschränkt;nur bei Sportbetrieb (Winter);9
+Feuerwehr Niederleierndorf;Hauptstr. 10a;48,8311;12,0876;24/7;außen zugänglich;10
+Feuerwehr Paring;Paring 242;48,8528;12,0892;24/7;außen zugänglich;11
+Feuerwehr Schneidhart;Mitterschneidhart 14;48,8563;12,0433;24/7;außen zugänglich;12
+Feuerwehr Leitenhausen;Leitenhausen 152;48,7969;12,0291;24/7;außen zugänglich;13
+Feuerwehr Adlhausen;Langquaiderstr. 2a;48,7858;12,0149;24/7;beim Vereinsstadl;14
+Adlhausen Sportplatz;Flurstr. 14a;48,7889;12,0086;eingeschränkt;nur bei Sportbetrieb;15
